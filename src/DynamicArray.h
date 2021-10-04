@@ -24,16 +24,17 @@ public:
     }
 
     ~DynamicArray() {
-        free(array);
-        printf("destroyed!\n");
+        delete[] array;
+        printf("dynamic array destroyed!\n");
     }
 
-    void push_back(const T& elem) {
+    const T& push_back(const T& elem) {
         if (capacity == size) {
             capacity <<= 1;
             array = (T*)realloc(array, capacity * sizeof(T));
         }
         array[size++] = elem; // копирование
+        return elem;
     }
 
     int length() const {

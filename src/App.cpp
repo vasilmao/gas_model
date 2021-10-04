@@ -1,5 +1,7 @@
 #include "App.h"
 
+Shape::~Shape() {}
+
 void parseEvent(App* app, SDL_Event event);
 
 const int WIDTH  = 800;
@@ -18,29 +20,38 @@ App::App() {
 
     width = WIDTH;
     height = HEIGHT;
+    // DynamicArray<Shape*> shapes;
+    // DynamicArray<PhysShape*> phys_shapes;
+    // DynamicArray<Renderable*> render_shapes;
+    renderer = new Renderer(width, height, bg_color, range_rect);
 
-    renderer = new Renderer(width, height, bg_color);
-    manager  = new CircleManager({0, 0, 400, 300}, range_rect, pixel_rect);
-    const float circles_r = 5;
-    for (int xx = range_rect.x + circles_r; xx < range_rect.width - range_rect.x - circles_r; xx += 150) {
-        for (int yy = range_rect.y + circles_r; yy < range_rect.height - range_rect.y - circles_r; yy += 150) {
-            manager->addCircle(Circle({xx, yy}, circles_r, {((float)rand()) / ((float)RAND_MAX), ((float)rand()) / ((float)RAND_MAX)}));
-        }
-    }
-    manager->addCircle(Circle({10, 10}, 5, {1, 1}));
-    manager->addCircle(Circle({10, 40}, 5, {-1, -1}));
-    manager->addCircle(Circle({10, 60}, 5, {1, 0}));
-    manager->addCircle(Circle({10, 80}, 5, {0, -1}));
-    manager->addCircle(Circle({10, 100}, 5, {1, 0.3}));
-    manager->addCircle(Circle({10, 120}, 5, {0.5, 0.7}));
-    manager->addCircle(Circle({10, 140}, 5, {0.6, -0.4}));
-    manager->addCircle(Circle({10, 160}, 5, {0.5, -0.3}));
+    manager = new CollisionManager();
+
+    // objects.push_back(new Circle({10, 10}, 5, {1, 1}, 1));
+    // objects.push_back(new Circle({40, 40}, 5, {-1, -1}, 1));
+
+    objects.push_back(new Wall({5, 5}, {395, 5}));
+    objects.push_back(new Wall({5, 5}, {5, 295}));
+    objects.push_back(new Wall({395, 5}, {395, 295}));
+    objects.push_back(new Wall({5, 295}, {395, 295}));
+
+    //shapes.push_back(new Wall())
+
+    objects.push_back(new Circle({20, 10}, 4, {1, 1}, 4));
+    objects.push_back(new Circle({20, 40}, 4, {-1, -1}, 4));
+    objects.push_back(new Circle({20, 60}, 4, {1, 0}, 4));
+    objects.push_back(new Circle({20, 80}, 4, {0, -1}, 4));
+    objects.push_back(new Circle({20, 100}, 5, {1, 0.3}, 5));
+    objects.push_back(new Circle({20, 120}, 6, {0.5, 0.7}, 6));
+    objects.push_back(new Circle({20, 140}, 7, {0.6, -0.4}, 7));
+    objects.push_back(new Circle({20, 160}, 8, {0.5, -0.3}, 8));
     renderer->setColor({255, 255, 255, 255});
 }
 
 App::~App() {
-    delete manager;
     delete renderer;
+    delete manager;
+    printf("app destroyed!\n");
     return;
 }
 
@@ -48,19 +59,43 @@ void App::run() {
     running = true;
     clock_t current_time = 0;
     clock_t previous_time = clock();
+
     while (running) {
+        // printf("cycle started\n");
         int event_result = renderer->getEvent();
         while (event_result > 0) {
             parseEvent(event_result);
             event_result = renderer->getEvent();
         }
         current_time = clock();
-        manager->update((float)(current_time - previous_time) / 1000);
-        manager->render(renderer);
+        // printf("updating...\n");
+        float dt = (current_time - previous_time) / 1000;
+        // float dt = 1;
+        for (int i = 0; i < objects.length(); ++i) {
+            // printf("%d start\n", i);
+            for (int j = i + 1; j < objects.length(); ++j) {
+                // printf("j: %d \n", j);
+                // printf("%p, %p\n", objects[i]->getPhysObject(), objects[j]->getPhysObject());
+                manager->collide(objects[i]->getPhysObject(), objects[j]->getPhysObject(), dt);
+                // printf("j: %d collided! \n", j);
+            }
+            // printf("%d end\n", i);
+            objects[i]->getPhysObject()->move(dt);
+            objects[i]->translateCoords();
+        }
+
+        // printf("rendering...\n");
+        for (int i = 0; i < objects.length(); ++i) {
+            // printf("e\n");
+            objects[i]->getRenderObject()->render(renderer);
+        }
+        renderer->render();
         printf("%lf\n", CLOCKS_PER_SEC / ((double)(current_time - previous_time)));
         previous_time = current_time;
         SDL_Delay(10);
+        // running = false;
     }
+    printf("uh!\n");
 }
 
 void App::parseEvent(int event) {

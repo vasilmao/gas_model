@@ -17,12 +17,15 @@ public:
     Vector(const Vector& other);
 
     Vector(){}
-    ~Vector(){}
+    ~Vector(){
+        // printf("vector destroyed!\n");
+    }
 
     float getX() const;
     float getY() const;
     float getLength() const;
     void normalize();
+    Vector getProjection(const Vector& other);
 
     void invertX();
     void invertY();
@@ -33,7 +36,11 @@ public:
     friend Vector operator - (const Vector& v1, const Vector& v2);
     friend Vector& operator *= (Vector& vector, const float coef);
     friend Vector operator * (const Vector& vector, const float coef);
+    friend Vector& operator /= (Vector& vector, const float coef);
+    friend Vector operator / (const Vector& vector, const float coef);
+    friend Vector operator * (const float coef, const Vector& vector);
     friend float operator * (const Vector& v1, const Vector& v2);
+    friend float crossProduct (const Vector& v1, const Vector& v2);
     void elByElMult(const Vector& v2);
 
 };

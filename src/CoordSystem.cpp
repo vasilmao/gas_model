@@ -25,6 +25,7 @@ CoordSystem::CoordSystem(Rect2f range_rect, Rect2f pixel_rect) {
 
 Vector CoordSystem::translatePoint(const Vector& point) const {
     // printf("(%f %f %f %f) ___ (%f %f %f %f) (%f %f)\n", x_min, y_min, x_max, y_max, pixel_x, pixel_y, pixel_width, pixel_height, point_to_pixel_coeff_x, point_to_pixel_coeff_y);
+    // printf("input: (%f %f)\n", point.getX(), point.getY());
     float delta_x  = point.getX() - x_min;
     float delta_y  = point.getY() - y_min;
     float result_x = pixel_x +                 delta_x * point_to_pixel_coeff_x;

@@ -14,7 +14,9 @@ public:
         coord_system = new CoordSystem(range_rect, pixel_rect);
     }
 
-    ~CircleManager() {}
+    ~CircleManager() {
+        printf("circle manager destroyed!\n");
+    }
 
     void update(const float time) const {
         for (int i = 0; i < array.length(); ++i) {

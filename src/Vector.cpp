@@ -24,22 +24,28 @@ void Vector::normalize() {
     length = 1;
 }
 
+Vector Vector::getProjection(const Vector& other) {
+    return (*this) * other / other.length * other * (1 / other.length);
+}
+
 void Vector::invertX() {
-    x = -x;
+    x = -x; // length does not change
 }
 void Vector::invertY() {
-    y = -y;
+    y = -y; // length does not change
 }
 
 Vector& operator += (Vector& v1, const Vector& v2) {
     v1.x += v2.x;
     v1.y += v2.y;
+    v1.length = sqrt(v1.x * v1.x + v1.y * v1.y);
     return v1;
 }
 
 Vector& operator -= (Vector& v1, const Vector& v2) {
     v1.x -= v2.x;
     v1.y -= v2.y;
+    v1.length = sqrt(v1.x * v1.x + v1.y * v1.y);
     return v1;
 }
 
@@ -68,8 +74,32 @@ Vector operator * (const Vector& vector, const float coef) {
     return result;
 }
 
+Vector& operator /= (Vector& vector, const float coef) {
+    vector.x /= coef;
+    vector.y /= coef;
+    vector.length = sqrt(vector.x * vector.x + vector.y * vector.y);
+    return vector;
+}
+
+Vector operator / (const Vector& vector, const float coef) {
+    Vector result(vector);
+    result /= coef;
+    return result;
+}
+
+Vector operator * (const float coef, const Vector& vector) {
+    Vector result(vector);
+    result *= coef;
+    return result;
+}
+
 float operator * (const Vector& v1, const Vector& v2) {
     float result = v1.x * v2.x + v1.y * v2.y;
+    return result;
+}
+
+float crossProduct (const Vector& v1, const Vector& v2) {
+    float result = v1.x * v2.y - v1.y * v2.x;
     return result;
 }
 

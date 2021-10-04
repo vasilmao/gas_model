@@ -22,7 +22,7 @@ private:
 public:
     CoordSystem(){}
     ~CoordSystem(){
-        //exit(1); // debug
+        printf("coord system destroyed!\n");
     }
 
     CoordSystem(Rect2f range_rect, Rect2f pixel_rect);
