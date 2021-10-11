@@ -7,9 +7,11 @@
 class Renderable {
 public:
     Renderable(){};
-    virtual ~Renderable(){};
+    Renderable(Color color) : color(color) {}
+    virtual ~Renderable(){}
 
     virtual void render(Renderer* renderer) = 0;
+    Color color = {255, 255, 255, 255};
 };
 
 class RenderableCircle : public Renderable {
@@ -18,11 +20,11 @@ private:
     float radius;
 public:
     RenderableCircle(){}
-    RenderableCircle(const Vector& center, const float r) : center(center), radius(r) {}
+    RenderableCircle(const Vector& center, const float r, Color color) : Renderable(color), center(center), radius(r) {}
 
     virtual void render(Renderer* renderer) {
         // printf("drawing circle!!! center = (%f, %f), r = %f\n", center.getX(), center.getY(), radius);
-        renderer->drawFilledCircle(center, radius);
+        renderer->drawFilledCircle(center, radius, color);
     }
 
     const Vector& getCenter() const {
@@ -49,7 +51,7 @@ private:
     Vector size;
 public:
     RenderableRect(){}
-    RenderableRect(const Vector& pos, const Vector& size) : pos(pos), size(size) {}
+    RenderableRect(const Vector& pos, const Vector& size, Color color) : Renderable(color), pos(pos), size(size) {}
 
     const Vector& getPos() const {
         return pos;
@@ -69,7 +71,7 @@ public:
 
     virtual void render(Renderer* renderer) {
         // printf("drawing rect :( pos = (%f, %f), size = (%f %f)\n", pos.getX(), pos.getY(), size.getX(), size.getY());
-        renderer->drawFilledRect(pos, pos + size);
+        renderer->drawFilledRect(pos, pos + size, color);
     }
 };
 
@@ -79,10 +81,11 @@ private:
     Vector point2;
 public:
     RenderLine() {}
-    RenderLine(const Vector& p1, const Vector& p2) : point1(p1), point2(p2) {}
+    RenderLine(const Vector& p1, const Vector& p2, Color color) : Renderable(color), point1(p1), point2(p2) {}
+
     virtual void render(Renderer* renderer) {
         // printf("drawing line\n");
-        renderer->drawLine(point1, point2);
+        renderer->drawLine(point1, point2, color);
     }
 
     const Vector& getFirstPoint() const {

@@ -23,7 +23,6 @@ void ReactCC(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*
 
     Vector center1 = pc1->getCenter();
     Vector center2 = pc2->getCenter();
-    // float d = new_ball_r * m1 * new_ball_r * m2 * 4;
     Vector new_size(new_ball_r * 2, new_ball_r * 2) ;
     objects->add(new Rect((center1 + center2) / 2 - (new_size / 2), new_size, final_speed, m1 + m2, potential_energy_loss));
     objects->erase(it1);

@@ -43,7 +43,7 @@ public:
 
     Circle(const Vector& coords, float r, const Vector& speed, float mass) : Shape(MoleculeType::CircleMolecule) {
         phys_object = new PhysCircle(coords, r, speed, mass);
-        render_object = new RenderableCircle(coords, r);
+        render_object = new RenderableCircle(coords, r, {255, 255, 255, 255});
         // printf("new circle! it has renderableCircle and type_id = %d\n", type_id);
     }
 
@@ -78,13 +78,16 @@ public:
     Rect(const Vector& pos, const Vector& size, const Vector& speed, float mass, float init_potential_energy = 0) : Shape(MoleculeType::RectangleMolecule) {
         type_id = MoleculeType::RectangleMolecule;
         phys_object = new PhysCircle(pos + (size / 2), size.getX() / 2, speed, mass);
-        render_object = new RenderableRect(pos, size);
+        render_object = new RenderableRect(pos, size, {255, 255, 255, 255});
         potential_energy = init_potential_energy;
     }
 
     virtual void translateCoords() {
         ((RenderableRect*)render_object)->setPos(((PhysCircle*)phys_object)->getCenter() - Vector(((PhysCircle*)phys_object)->getR(), ((PhysCircle*)phys_object)->getR()));
         ((RenderableRect*)render_object)->setSize(2 * Vector((((PhysCircle*)phys_object)->getR()), (((PhysCircle*)phys_object)->getR())));
+        float color_percent = potential_energy > 5000 ? 1 : potential_energy / 5000;
+        ((RenderableRect*)render_object)->color = {255, (unsigned char)(255 * (1 - color_percent)), (unsigned char)(255 * (1 - color_percent)), 255};
+
     }
 
     virtual Vector getReactionPos() {
@@ -112,7 +115,7 @@ public:
     Wall (const Vector& pos1, const Vector& pos2) : Shape(MoleculeType::Wall) {
         type_id = MoleculeType::Wall;
         phys_object = new PhysWall(pos1, pos2, Vector(0, 0), 0);
-        render_object = new RenderLine(pos1, pos2);
+        render_object = new RenderLine(pos1, pos2, {0, 0, 0, 255});
     }
 
     virtual void translateCoords() {
