@@ -9,7 +9,7 @@
 #include "DynamicArray.h"
 #include "Tools.h"
 #include "CollisionManager.h"
-#include "ChemicalReaction.h"
+#include "CollisionReaction.h"
 #include "Shapes.h"
 #include "List.h"
 
@@ -18,7 +18,7 @@ private:
     friend Renderer;
     Renderer* renderer;
     CollisionManager* manager;
-    ChemistryManager* chem_manager;
+    ReactionManager* chem_manager;
     // DynamicArray<Renderable*> renderable_objects;
     // DynamicArray<PhysShape*>  phys_objects;
     List<Shape*> objects;

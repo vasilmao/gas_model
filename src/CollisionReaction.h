@@ -21,7 +21,7 @@ void ReactWW(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*
 
 typedef void (*chem_react)(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*>* objects);
 
-class ChemistryManager {
+class ReactionManager {
 private:
     chem_react reactions_virtual_table[3][3] = {
         {ReactCC, ReactCR, ReactCW},
@@ -30,7 +30,7 @@ private:
     };
 
 public:
-    ChemistryManager(){}
+    ReactionManager(){}
     void chemReaction(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*>* objects) {
         // printf("chem reaction got!\n");
         // printf("types: %d and %d\n", it1.getNode()->data->getType(), it2.getNode()->data->getType());

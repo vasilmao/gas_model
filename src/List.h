@@ -74,7 +74,6 @@ public:
     };
     
     void add(const T& elem) {
-        printf("ya adding, now size is %d\n", size);
         if (size == 0) {
             // printf("bruh\n");
             head = new Node(elem);
