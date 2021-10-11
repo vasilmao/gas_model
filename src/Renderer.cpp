@@ -21,7 +21,7 @@ Renderer::Renderer(int width, int height, Color bg_color, const Rect2f& range_re
     SDL_RenderClear(renderer);
     SDL_SetRenderDrawColor(renderer, open_color(current_color));
 
-    coord_system = new CoordSystem(range_rect, {0, 0, width, height});
+    coord_system = new CoordSystem(range_rect, {0., 0., (float)width, (float)height});
 }
 
 Renderer::~Renderer() {
@@ -35,6 +35,7 @@ void Renderer::setColor(Color new_color) {
 }
 
 void Renderer::drawFilledCircle(const Vector& center, const float r) const {
+    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
     float r2 = r * r;
     Vector center_point(center);
     Vector circle_quadr_diagonal(r, -r);
@@ -57,6 +58,7 @@ void Renderer::drawFilledCircle(const Vector& center, const float r) const {
             }
         }
     }
+    SDL_SetRenderDrawColor(renderer, open_color(bg_color));
     // for (int px = pixel_left_up_point.getX(); px < pixel_right_down_point.getX(); ++px) {
     //     Vector real_point = coord_system->translatePixel({px, center_point.getX()});
     //     float delta_x = real_point.getX() - center_point.getX();
@@ -78,11 +80,17 @@ void Renderer::drawRect(const Vector& p1, const Vector& p2) const {
 void Renderer::drawFilledRect(const Vector& p1, const Vector& p2) const {
     Vector pixel_p1 = coord_system->translatePoint(p1);
     Vector pixel_p2 = coord_system->translatePoint(p2);
+    // printf("p1: %f,%f\n", p1.getX(), p1.getY());
+    // printf("pixel_p1: %f,%f\n", pixel_p1.getX(), pixel_p1.getY());
+    // printf("p2: %f,%f\n", p2.getX(), p2.getY());
+    // printf("pixel_p2: %f,%f\n", pixel_p2.getX(), pixel_p2.getY());
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     for (int x = pixel_p1.getX(); x <= pixel_p2.getX(); ++x) {
-        SDL_RenderDrawLineF(renderer, x, p1.getY(), x, p2.getY());
+        SDL_RenderDrawLineF(renderer, x, pixel_p1.getY(), x, pixel_p2.getY());
     }
-    SDL_FRect rect = {p1.getX(), p1.getY(), p2.getX(), p2.getY()};
-    SDL_RenderDrawRectF(renderer, &rect);
+    // SDL_FRect rect = {p1.getX(), p1.getY(), p2.getX(), p2.getY()};
+    // SDL_RenderDrawRectF(renderer, &rect);
+    SDL_SetRenderDrawColor(renderer, open_color(bg_color));
 }
 
 void Renderer::drawSegment(const Vector& p1, const Vector& p2) const {

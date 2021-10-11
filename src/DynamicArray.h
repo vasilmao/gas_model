@@ -23,18 +23,26 @@ public:
         array = (T*)calloc(capacity, sizeof(T));
     }
 
-    ~DynamicArray() {
-        delete[] array;
-        printf("dynamic array destroyed!\n");
+    DynamicArray(int init_size, T init_elem) {
+        capacity = init_size;
+        size = init_size;
+        array = (T*)calloc(capacity, sizeof(T));
+        for (int i = 0; i < size; ++i) {
+            array[i] = init_elem;
+        }
     }
 
-    const T& push_back(const T& elem) {
+    ~DynamicArray() {
+        free(array);
+        //printf("dynamic array destroyed!\n");
+    }
+
+    void push_back(T& elem) {
         if (capacity == size) {
             capacity <<= 1;
             array = (T*)realloc(array, capacity * sizeof(T));
         }
         array[size++] = elem; // копирование
-        return elem;
     }
 
     int length() const {
@@ -50,9 +58,17 @@ public:
         }
     }
 
-    T& operator [] (int i) const {
+    T& operator [] (int i) {
         assert(i >= 0 && i < size);
         return array[i];
+    }
+
+    T* begin() {
+        return array;
+    }
+
+    T* end() {
+        return array + size;
     }
 
 };

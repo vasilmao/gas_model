@@ -9,9 +9,7 @@ public:
     Renderable(){};
     virtual ~Renderable(){};
 
-    virtual void render(Renderer* renderer) {
-        // printf("drawing nothing");
-    }
+    virtual void render(Renderer* renderer) = 0;
 };
 
 class RenderableCircle : public Renderable {
@@ -23,7 +21,7 @@ public:
     RenderableCircle(const Vector& center, const float r) : center(center), radius(r) {}
 
     virtual void render(Renderer* renderer) {
-        // printf("drawing circle\n");
+        // printf("drawing circle!!! center = (%f, %f), r = %f\n", center.getX(), center.getY(), radius);
         renderer->drawFilledCircle(center, radius);
     }
 
@@ -47,31 +45,31 @@ public:
 
 class RenderableRect : public Renderable {
 private:
-    Vector pos1;
-    Vector pos2;
+    Vector pos;
+    Vector size;
 public:
     RenderableRect(){}
-    RenderableRect(const Vector& pos1, const Vector& pos2) : pos1(pos1), pos2(pos2) {}
+    RenderableRect(const Vector& pos, const Vector& size) : pos(pos), size(size) {}
 
     const Vector& getPos() const {
-        return pos1;
+        return pos;
     }
 
-    Vector getSize() const {
-        return pos2 - pos1;
+    const Vector& getSize() const {
+        return size;
     }
 
     void setPos(const Vector& new_pos) {
-        pos1 = new_pos;
+        pos = new_pos;
     }
 
-    void setSize(const Vector& new_pos) {
-        pos2 = new_pos - pos1;
+    void setSize(const Vector& new_size) {
+        size = new_size;
     }
 
     virtual void render(Renderer* renderer) {
-        // printf("drawing rect\n");
-        renderer->drawFilledRect(pos1, pos2);
+        // printf("drawing rect :( pos = (%f, %f), size = (%f %f)\n", pos.getX(), pos.getY(), size.getX(), size.getY());
+        renderer->drawFilledRect(pos, pos + size);
     }
 };
 

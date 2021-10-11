@@ -1,6 +1,7 @@
 #ifndef INCLUDE_TOOLS_STRUCT
 #define INCLUDE_TOOLS_STRUCT
 #include <stdio.h>
+#include <assert.h>
 
 struct Rect2i {
     int x;

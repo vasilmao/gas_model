@@ -1,5 +1,5 @@
-#ifndef INCLUDE_SHAPES
-#define INCLUDE_SHAPES
+#ifndef INCLUDE_PHYS_SHAPES
+#define INCLUDE_PHYS_SHAPES
 
 #include "Tools.h"
 #include "Vector.h"
@@ -7,8 +7,6 @@
 class CollisionManager;
 
 class PhysShape {
-    friend CollisionManager;
-    
 public:
 
     enum class ShapeType {
@@ -37,7 +35,7 @@ public:
     virtual void move (float time) = 0;
     virtual ~PhysShape() = 0;
 
-    virtual const Vector& getSpeed() const {
+    virtual Vector getSpeed() const {
         return speed;
     }
 
@@ -56,6 +54,10 @@ public:
     virtual Vector getImpulse() {
         return speed * mass;
     }
+
+    virtual int getType() {
+        return (int)type_id;
+    }
 };
 
 class PhysCircle : public PhysShape {
@@ -72,6 +74,7 @@ public:
     }
     
     virtual void move(float time) {
+        // printf("circle: center is %f %f\n", center.getX(), center.getY());
         center += speed * time;
     }
 
