@@ -125,6 +125,15 @@ public:
     int getSize() const {
         return size;
     }
+
+    ~List() {
+        Node* cur_node = head;
+        while (cur_node) {
+            Node* old_node = cur_node;
+            cur_node = cur_node->right;
+            delete old_node;
+        }
+    }
 };
 
 #endif

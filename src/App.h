@@ -12,16 +12,15 @@
 #include "CollisionReaction.h"
 #include "Shapes.h"
 #include "List.h"
+#include "MoleculeBox.h"
 
 class App {
 private:
     friend Renderer;
     Renderer* renderer;
-    CollisionManager* manager;
-    ReactionManager* chem_manager;
-    // DynamicArray<Renderable*> renderable_objects;
-    // DynamicArray<PhysShape*>  phys_objects;
-    List<Shape*> objects;
+
+    MoleculeBox* box;
+    
     bool running;
 
     int width;
