@@ -3,7 +3,7 @@
 #include "Tools.h"
 #include "Vector.h"
 
-class CoordSystem {
+class PixelCoordSystem {
 
 private:
     float x_min = 0;
@@ -20,6 +20,32 @@ private:
     float point_to_pixel_coeff_y = 0;
 
 public:
+    PixelCoordSystem(){}
+    ~PixelCoordSystem(){
+        printf("coord system destroyed!\n");
+    }
+
+    PixelCoordSystem(Rect2f range_rect, Rect2f pixel_rect);
+
+    Rect2f getPixelRect() const;
+    Rect2f getCoordRect() const;
+    Vector translatePoint(const Vector& point) const;
+    Vector translatePixel(const Vector& pixel) const;
+};
+
+class CoordSystem {
+
+private:
+    Vector relative_pos;
+    Vector relative_size;
+
+    Vector absolute_pos;
+    Vector absolute_size;
+
+    float rel_to_abs_coeff_x = 0;
+    float rel_to_abs_coeff_y = 0;
+
+public:
     CoordSystem(){}
     ~CoordSystem(){
         printf("coord system destroyed!\n");
@@ -27,10 +53,10 @@ public:
 
     CoordSystem(Rect2f range_rect, Rect2f pixel_rect);
 
-    Rect2f getPixelRect() const;
-    Rect2f getCoordRect() const;
-    Vector translatePoint(const Vector& point) const;
-    Vector translatePixel(const Vector& pixel) const;
+    // Rect2f getPixelRect() const;
+    // Rect2f getCoordRect() const;
+    Vector translateToRelative(const Vector& point) const;
+    Vector translateToAbsolute(const Vector& pixel) const;
 };
 
 #endif

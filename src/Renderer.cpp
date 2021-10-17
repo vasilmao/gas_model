@@ -19,7 +19,7 @@ Renderer::Renderer(int width, int height, Color bg_color, const Rect2f& range_re
     SDL_RenderClear(renderer);
     SDL_SetRenderDrawColor(renderer, open_color(current_color));
 
-    coord_system = new CoordSystem(range_rect, {0., 0., (float)width, (float)height});
+    coord_system = new PixelCoordSystem(range_rect, {0., 0., (float)width, (float)height});
 }
 
 Renderer::~Renderer() {
@@ -58,7 +58,7 @@ void Renderer::drawFilledCircle(const Vector& center, const float r, Color color
 void Renderer::drawRect(const Vector& p1, const Vector& p2, Color color) const {
     Vector pixel_p1 = coord_system->translatePoint(p1);
     Vector pixel_p2 = coord_system->translatePoint(p2);
-    SDL_FRect rect = {pixel_p1.getX(), pixel_p1.getY(), pixel_p2.getX(), pixel_p2.getY()};
+    SDL_FRect rect = {pixel_p1.getX(), pixel_p1.getY(), pixel_p2.getX() - pixel_p1.getX(), pixel_p2.getY() - pixel_p1.getY()};
     SDL_SetRenderDrawColor(renderer, open_color(color));
     SDL_RenderDrawRectF(renderer, &rect);
     SDL_SetRenderDrawColor(renderer, open_color(bg_color));
@@ -86,7 +86,8 @@ void Renderer::drawLine(const Vector& p1, const Vector& p2, Color color) const {
     Vector pixel_p1 = coord_system->translatePoint(p1);
     Vector pixel_p2 = coord_system->translatePoint(p2);
     SDL_SetRenderDrawColor(renderer, open_color(color));
-    SDL_RenderDrawLineF(renderer, pixel_p1.getX(), pixel_p1.getY(), pixel_p2.getX(), pixel_p2.getY());
+    SDL_RenderDrawLine(renderer, (int)pixel_p1.getX(), (int)pixel_p1.getY(), (int)pixel_p2.getX(), (int)pixel_p2.getY());
+    SDL_RenderDrawLine(renderer, (int)pixel_p1.getX(), (int)pixel_p1.getY(), (int)pixel_p2.getX(), (int)pixel_p2.getY());
     SDL_SetRenderDrawColor(renderer, open_color(bg_color));
 }
 

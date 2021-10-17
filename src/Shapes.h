@@ -3,6 +3,9 @@
 
 #include "RenderableShapes.h"
 #include "PhysShapes.h"
+#include "CoordSystem.h"
+
+const float MAX_POTENTIAL_ENERGY = 5000;
 
 class Shape {
 public:
@@ -25,7 +28,7 @@ public:
     virtual Renderable* getRenderObject() const {
         return render_object;
     }
-    virtual void translateCoords() = 0;
+    virtual void translateCoords(const CoordSystem* coord_system) = 0;
 
     virtual int getType() const {
         return static_cast<int> (type_id);
@@ -47,9 +50,9 @@ public:
         // printf("new circle! it has renderableCircle and type_id = %d\n", type_id);
     }
 
-    virtual void translateCoords() {
+    virtual void translateCoords(const CoordSystem* coord_system) {
         ((RenderableCircle*)render_object)->setR(((PhysCircle*)phys_object)->getR());
-        ((RenderableCircle*)render_object)->setCenter(((PhysCircle*)phys_object)->getCenter());
+        ((RenderableCircle*)render_object)->setCenter(coord_system->translateToAbsolute(((PhysCircle*)phys_object)->getCenter()));
     }
 
     virtual const Vector& getReactionCenter() {
@@ -82,10 +85,10 @@ public:
         potential_energy = init_potential_energy;
     }
 
-    virtual void translateCoords() {
-        ((RenderableRect*)render_object)->setPos(((PhysCircle*)phys_object)->getCenter() - Vector(((PhysCircle*)phys_object)->getR(), ((PhysCircle*)phys_object)->getR()));
+    virtual void translateCoords(const CoordSystem* coord_system) {
+        ((RenderableRect*)render_object)->setPos(coord_system->translateToAbsolute(((PhysCircle*)phys_object)->getCenter() - Vector(((PhysCircle*)phys_object)->getR(), ((PhysCircle*)phys_object)->getR())));
         ((RenderableRect*)render_object)->setSize(2 * Vector((((PhysCircle*)phys_object)->getR()), (((PhysCircle*)phys_object)->getR())));
-        float color_percent = potential_energy > 5000 ? 1 : potential_energy / 5000;
+        float color_percent = potential_energy > MAX_POTENTIAL_ENERGY ? 1 : potential_energy / MAX_POTENTIAL_ENERGY;
         ((RenderableRect*)render_object)->color = {255, (unsigned char)(255 * (1 - color_percent)), (unsigned char)(255 * (1 - color_percent)), 255};
 
     }
@@ -118,9 +121,9 @@ public:
         render_object = new RenderLine(pos1, pos2, {0, 0, 0, 255});
     }
 
-    virtual void translateCoords() {
-        ((RenderLine*)render_object)->setFirstPoint(((PhysWall*)phys_object)->getFirstPoint());
-        ((RenderLine*)render_object)->setSecondPoint(((PhysWall*)phys_object)->getSecondPoint());
+    virtual void translateCoords(const CoordSystem* coord_system) {
+        ((RenderLine*)render_object)->setFirstPoint(coord_system->translateToAbsolute(((PhysWall*)phys_object)->getFirstPoint()));
+        ((RenderLine*)render_object)->setSecondPoint(coord_system->translateToAbsolute(((PhysWall*)phys_object)->getSecondPoint()));
     }
 
     virtual ~Wall() {

@@ -23,6 +23,7 @@ private:
     Node* head = nullptr;
     Node* tail = nullptr;
     int size = 0;
+    int clear_cnt = 0;
     
 public:
     struct Iterator
@@ -35,8 +36,6 @@ public:
             // printf("created iterator with node %p\n", node);
         }
         const Iterator& operator ++ () {
-            // printf("Itertor operation++: node is %p\n", node);
-            // printf("Itertor operation++: right is %p\n", node->right);
             node = node->right;
             return *this;
         }
@@ -91,16 +90,23 @@ public:
 
     void erase(Iterator& it) {
         it.getNode()->is_valid = false;
+        ++clear_cnt;
+    }
+
+    void eraseHead() {
+        if (head != nullptr) {
+            head->is_valid = false;
+        }
+        ++clear_cnt;
     }
 
     Iterator begin() {
         return Iterator{head};
     }
 
-
     void clear() {
         Node* cur_node = head;
-        while (cur_node != nullptr) {
+        while (cur_node != nullptr && clear_cnt > 0) {
             if (!(cur_node->is_valid)) {
                 if (cur_node->left != nullptr) {
                     cur_node->left->right = cur_node->right;
@@ -116,6 +122,7 @@ public:
                 cur_node = cur_node->right;
                 delete old_node;
                 --size;
+                --clear_cnt;
             } else {
                 cur_node = cur_node->right;
             }

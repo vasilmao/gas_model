@@ -12,17 +12,18 @@
 
 class MoleculeBox {
 private:
-    Rect2f box;
     Rect2f screen_place;
-    // CoordSystem coord_system;
+    CoordSystem* coord_system;
     CollisionManager* manager;
     ReactionManager* chem_manager;
     // DynamicArray<Renderable*> renderable_objects;
     // DynamicArray<PhysShape*>  phys_objects;
-    List<Shape*> objects;
+    List<Shape*>* objects;
 public:
     MoleculeBox(Vector pos, Vector size);
-
+    List<Shape*>* getObjects() {
+        return objects;
+    }
     void update(float dt);
     void render(float dt, Renderer* renderer);
 };

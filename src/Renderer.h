@@ -17,7 +17,7 @@ private:
     SDL_Renderer* renderer = NULL;
     // SDL_Surface* surface   = NULL;
 
-    CoordSystem* coord_system;
+    PixelCoordSystem* coord_system;
 
     // int32_t* pixels = NULL;
     int width = 0;

@@ -13,6 +13,7 @@
 #include "Shapes.h"
 #include "List.h"
 #include "MoleculeBox.h"
+#include "PlotMoleculeCounter.h"
 
 class App {
 private:
@@ -20,6 +21,7 @@ private:
     Renderer* renderer;
 
     MoleculeBox* box;
+    PlotMoleculeCounter* plot;
     
     bool running;
 
