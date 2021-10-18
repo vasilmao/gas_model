@@ -111,6 +111,7 @@ public:
 
 class Wall : public Shape {
 public:
+    float potential_energy = 0;
     Wall () : Shape(MoleculeType::Wall){
         type_id = MoleculeType::Wall;
     }
@@ -124,6 +125,8 @@ public:
     virtual void translateCoords(const CoordSystem* coord_system) {
         ((RenderLine*)render_object)->setFirstPoint(coord_system->translateToAbsolute(((PhysWall*)phys_object)->getFirstPoint()));
         ((RenderLine*)render_object)->setSecondPoint(coord_system->translateToAbsolute(((PhysWall*)phys_object)->getSecondPoint()));
+        float color_percent = potential_energy > MAX_POTENTIAL_ENERGY ? 1 : potential_energy / MAX_POTENTIAL_ENERGY;
+        ((RenderLine*)render_object)->color = {(unsigned char)(255 * color_percent), 0, 0, 255};
     }
 
     virtual ~Wall() {

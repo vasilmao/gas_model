@@ -1,5 +1,7 @@
 #include "MoleculeBox.h"
 
+const float heat_wall_energy_addition = 1000;
+
 struct CollisionInfo {
     List<Shape*>::Iterator it1;
     List<Shape*>::Iterator it2;
@@ -90,5 +92,13 @@ void MoleculeBox::render(float dt, Renderer* renderer) {
     // renderer->drawFilledRect({screen_place.x, screen_place.y}, {screen_place.x + screen_place.width, screen_place.y + screen_place.height}, {0, 0, 0, 255});
     for (List<Shape*>::Iterator i = objects->begin(); i.isValid(); ++i) {
         i.getNode()->data->getRenderObject()->render(renderer);
+    }
+}
+
+void MoleculeBox::heatWalls() {
+    for (List<Shape*>::Iterator i = objects->begin(); i.isValid(); ++i) {
+        if (i.getNode()->data->getType() == (int)Shape::MoleculeType::Wall) {
+            reinterpret_cast<Wall*>(i.getNode()->data)->potential_energy += heat_wall_energy_addition;
+        }
     }
 }

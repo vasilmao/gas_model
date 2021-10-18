@@ -24,6 +24,7 @@ public:
     List<Shape*>* getObjects() {
         return objects;
     }
+    void heatWalls();
     void update(float dt);
     void render(float dt, Renderer* renderer);
 };

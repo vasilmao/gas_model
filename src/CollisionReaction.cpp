@@ -2,6 +2,10 @@
 
 const float new_ball_r = 2.0;
 
+const float energy_coef = 0.1;
+
+const float min_energy_transition = 10;
+
 void ReactCC(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*>* objects) {
     // printf("c + c\n");
     Circle* circle1 = reinterpret_cast<Circle*> (it1.getNode()->data);
@@ -136,6 +140,17 @@ void ReactCW(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*
 
 void ReactRW(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*>* objects) {
     ReactCW(it1, it2, objects);
+    Rect* rect = reinterpret_cast<Rect*> (it1.getNode()->data);
+    Wall* wall = reinterpret_cast<Wall*> (it2.getNode()->data);
+    if (wall->potential_energy > min_energy_transition) {
+        float energy_delta = wall->potential_energy - rect->potential_energy;
+        energy_delta *= energy_coef;
+        if (energy_delta < -FLT_EPSILON) {
+            energy_delta = -energy_delta;
+        }
+        rect->potential_energy += energy_delta;
+        wall->potential_energy -= energy_delta;
+    }
 }
 
 void ReactWW(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*>* objects) {

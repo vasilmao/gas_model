@@ -24,6 +24,7 @@ private:
     MoleculeBox* box;
     PlotMoleculeCounter* plot;
     Button* plot_button;
+    Button* wall_heat_button;
     
     bool running;
 

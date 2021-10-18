@@ -9,14 +9,24 @@ public:
     PlotShrinkerButtonFunctor(PlotMoleculeCounter* plot) : plot(plot) {}
     virtual void function() {
         plot->shrinkToFit();
-        free(calloc(10000, 100));
     }
     virtual void operator()(){
         function();
     }
 };
 
-// void parseEvent(App* app, SDL_Event event);
+class WallHeaterButtonFunctor : AbstractFunctor {
+private:
+    MoleculeBox* box;
+public:
+    WallHeaterButtonFunctor(MoleculeBox* box) : box(box) {}
+    virtual void function() {
+        box->heatWalls();
+    }
+    virtual void operator()(){
+        function();
+    }
+};
 
 const int WIDTH  = 1000;
 const int HEIGHT = 750;
@@ -35,6 +45,9 @@ App::App() {
     plot = new PlotMoleculeCounter({5, 5}, {450, 190});
     AbstractFunctor* plot_button_functor = reinterpret_cast<AbstractFunctor*>(new PlotShrinkerButtonFunctor(plot));
     plot_button = new Button({460, 5}, {100, 190}, plot_button_functor);
+
+    AbstractFunctor* walls_button_functor = reinterpret_cast<AbstractFunctor*>(new WallHeaterButtonFunctor(box));
+    wall_heat_button = new Button({460, 200}, {100, 390}, walls_button_functor);
 }
 
 App::~App() {
@@ -71,6 +84,7 @@ void App::run() {
         }
         plot->render(dt, renderer);
         plot_button->render(dt, renderer);
+        wall_heat_button->render(dt, renderer);
         
         renderer->render();
         // SDL_Delay(10);
@@ -86,6 +100,9 @@ void App::parseEvent(const SystemEvent& event) {
     case MOUSE_BUTTON_DOWN:
         if (plot_button->onMouseTest(event.mouse_pos.pos)) {
             plot_button->onClick(event.mouse_pos.pos);
+        }
+        if (wall_heat_button->onMouseTest(event.mouse_pos.pos)) {
+            wall_heat_button->onClick(event.mouse_pos.pos);
         }
     default:
         break;
