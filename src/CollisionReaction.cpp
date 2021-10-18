@@ -3,7 +3,7 @@
 const float new_ball_r = 2.0;
 
 void ReactCC(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*>* objects) {
-    printf("c + c\n");
+    // printf("c + c\n");
     Circle* circle1 = reinterpret_cast<Circle*> (it1.getNode()->data);
     Circle* circle2 = reinterpret_cast<Circle*> (it2.getNode()->data);
 
@@ -51,7 +51,7 @@ void ReactRR(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*
     float kinetic_energy = m1 * speed1 * speed1 + m2 * speed2 * speed2 + 2 * rect1->potential_energy + 2 * rect2->potential_energy;
     float ball_speed_value = sqrt(kinetic_energy / balls_cnt);
 
-    printf("r + r\n");
+    // printf("r + r\n");
     // printf("explosion center: %f %f\n", explosion_center.getX(), explosion_center.getY());
     // printf("ball cnt: %d\n", balls_cnt);
     // printf("energy: %f %f\n", rect1->potential_energy, rect2->potential_energy);
@@ -96,7 +96,7 @@ void ReactCR(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*
 
     float potential_energy_loss = (speed1.getLength() * speed1.getLength() * m1 + speed2.getLength() * speed2.getLength() * m2) / 2 - (final_speed.getLength() * final_speed.getLength() * (m1 + m2)) / 2;
 
-    printf("c + r\n");
+    // printf("c + r\n");
     // Vector center1 = (reinterpret_cast<PhysCircle*>(circle->getPhysObject()))->getCenter();
     // Vector pos2 = (reinterpret_cast<PhysCircle*>(rect->getPhysObject()))->getCenter();
     rect->potential_energy += potential_energy_loss;

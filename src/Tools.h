@@ -3,6 +3,16 @@
 #include <stdio.h>
 #include <assert.h>
 
+template<class T>
+const T& Max(const T& el1, const T& el2) {
+    return el1 < el2 ? el2 : el1;
+}
+
+template<class T>
+const T& Min(const T& el1, const T& el2) {
+    return el1 < el2 ? el1 : el2;
+}
+
 struct Rect2i {
     int x;
     int y;

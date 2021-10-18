@@ -14,6 +14,7 @@
 #include "List.h"
 #include "MoleculeBox.h"
 #include "PlotMoleculeCounter.h"
+#include "Button.h"
 
 class App {
 private:
@@ -22,13 +23,14 @@ private:
 
     MoleculeBox* box;
     PlotMoleculeCounter* plot;
+    Button* plot_button;
     
     bool running;
 
     int width;
     int height;
 
-    void parseEvent(int event);
+    void parseEvent(const SystemEvent& event);
 
 public:
     App();

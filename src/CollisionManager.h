@@ -3,8 +3,8 @@
 
 #include "PhysShapes.h"
 
-#define Max(a, b) a > b ? a : b
-#define Min(a, b) a < b ? a : b
+// #define Max(a, b) a > b ? a : b
+// #define Min(a, b) a < b ? a : b
 
 bool RectsIntersec(const Vector& r1_pos, const Vector& r1_size, const Vector& r2_pos, const Vector& r2_size);
 
@@ -39,10 +39,7 @@ public:
             s1 = s2;
             s2 = temp;
         }
-        // printf("delim %d, %d\n", s1->getType(), s2->getType());
-        
         bool dt_collison = (*detect_collision_virtual_table[(int)s1->getType()][(int)s2->getType()])(s1, s2, dt);
-        // printf("collision in dt? %d\n", (int)dt_collison);
         const float EPS = 1e-6;
         if (dt_collison) {
             float left = 0;

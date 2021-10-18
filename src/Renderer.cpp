@@ -44,7 +44,7 @@ void Renderer::drawFilledCircle(const Vector& center, const float r, Color color
     Vector pixel_right_down_point = coord_system->translatePoint(center_point);
     for (int py = pixel_left_up_point.getY(); py <= pixel_right_down_point.getY(); ++py) {
         for (int px = pixel_left_up_point.getX(); px <= pixel_right_down_point.getX(); ++px) {
-            Vector coord_point = coord_system->translatePixel({px, py});
+            Vector coord_point = coord_system->translatePixel({(float)px, (float)py});
             float x_c = (coord_point.getX() - center.getX());
             float y_c = (coord_point.getY() - center.getY()); 
             if (x_c * x_c + y_c * y_c <= r2) {
@@ -98,14 +98,23 @@ void Renderer::render() {
     // SDL_SetRenderDrawColor(renderer, open_color(current_color));
 }
 
-int Renderer::getEvent() const {
+SystemEvent Renderer::getEvent() const {
     SDL_Event event;
     int res = SDL_PollEvent(&event);
+    SystemEvent result_event; // oh...
     if (event.type == SDL_QUIT) {
-        return QUIT_EVENT;
+        result_event.event_type = QUIT_EVENT;
+        return result_event;
+    }
+    if (event.type == SDL_MOUSEBUTTONDOWN) {
+        result_event.event_type = MOUSE_BUTTON_DOWN;
+        result_event.mouse_pos = {coord_system->translatePixel(Vector(event.button.x, event.button.y))};
+        return result_event;
     }
     if (res == 0) {
-        return NO_EVENT;
+        result_event.event_type = NO_EVENT;
+        return result_event;
     }
-    return OTHER_EVENTS;
+    result_event.event_type = OTHER_EVENTS;
+    return result_event;
 }

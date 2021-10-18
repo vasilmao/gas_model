@@ -4,8 +4,8 @@
 #include "Shapes.h"
 #include "List.h"
 
-#define Max(a, b) a > b ? a : b
-#define Min(a, b) a < b ? a : b
+// #define Max(a, b) a > b ? a : b
+// #define Min(a, b) a < b ? a : b
 
 void ReactCC(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*>* objects);
 

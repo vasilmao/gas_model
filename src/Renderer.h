@@ -5,10 +5,36 @@
 #include "CoordSystem.h"
 #include "Tools.h"
 
-enum Events {
+enum EventTypes {
     NO_EVENT,
     QUIT_EVENT,
+    MOUSE_BUTTON_DOWN,
     OTHER_EVENTS
+};
+
+struct MousePos {
+    Vector pos;
+};
+
+struct BigEvent {
+    char data[64];
+};
+
+struct SystemEvent {
+    int event_type;
+    union
+    {
+        MousePos mouse_pos;
+        BigEvent big_event;
+    };
+    SystemEvent(){}
+    SystemEvent(const SystemEvent& other_event){
+        event_type = other_event.event_type;
+        for (int i = 0; i < 64; ++i) {
+            big_event.data[i] = other_event.big_event.data[i];
+        }
+    }
+    ~SystemEvent(){}
 };
 
 class Renderer {
@@ -40,7 +66,7 @@ public:
     void drawSegment(const Vector& p1, const Vector& p2, Color color) const;
     void drawLine(const Vector& p1, const Vector& p2, Color color) const;
     void render();
-    int  getEvent() const;
+    SystemEvent getEvent() const;
 };
 
 #endif

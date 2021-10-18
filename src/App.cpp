@@ -2,7 +2,21 @@
 
 Shape::~Shape() {}
 
-void parseEvent(App* app, SDL_Event event);
+class PlotShrinkerButtonFunctor : AbstractFunctor {
+private:
+    PlotMoleculeCounter* plot;
+public:
+    PlotShrinkerButtonFunctor(PlotMoleculeCounter* plot) : plot(plot) {}
+    virtual void function() {
+        plot->shrinkToFit();
+        free(calloc(10000, 100));
+    }
+    virtual void operator()(){
+        function();
+    }
+};
+
+// void parseEvent(App* app, SDL_Event event);
 
 const int WIDTH  = 1000;
 const int HEIGHT = 750;
@@ -10,10 +24,6 @@ const int HEIGHT = 750;
 const Color bg_color = {185, 226, 235, 255};
 const Rect2f range_rect = {0, 0, 800, 600};
 const Rect2f pixel_rect = {0, 0, WIDTH, HEIGHT};
-
-float function_to_draw(float x) {
-    return sin(x);
-}
 
 App::App() {
     running = false;
@@ -23,12 +33,8 @@ App::App() {
     renderer = new Renderer(width, height, bg_color, range_rect);
     box = new MoleculeBox({5, 200}, {450, 390});
     plot = new PlotMoleculeCounter({5, 5}, {450, 190});
-    // objects.push_back(new Circle({10, 10}, 5, {1, 1}, 1));
-    // objects.push_back(new Circle({40, 40}, 5, {-1, -1}, 1));
-
-
-    
-    // renderer->setColor({255, 255, 255, 255});
+    AbstractFunctor* plot_button_functor = reinterpret_cast<AbstractFunctor*>(new PlotShrinkerButtonFunctor(plot));
+    plot_button = new Button({460, 5}, {100, 190}, plot_button_functor);
 }
 
 App::~App() {
@@ -41,15 +47,21 @@ App::~App() {
 
 void App::run() {
     running = true;
-    int cnt = 10;
+    int cnt = 99;
     while (running) {
-        int event_result = renderer->getEvent();
-        while (event_result > 0) {
+        SystemEvent event_result = renderer->getEvent();
+        while (event_result.event_type > 0) {
             parseEvent(event_result);
+            if (!running) {
+                break;
+            }
             event_result = renderer->getEvent();
         }
+        // printf("events passed!\n");
+        if (!running) {
+            break;
+        }
         float dt = 0.002;
-        
         box->update(dt);
         box->render(dt, renderer);
         ++cnt;
@@ -58,20 +70,23 @@ void App::run() {
             cnt = 0;
         }
         plot->render(dt, renderer);
+        plot_button->render(dt, renderer);
         
-        // printf("%6d - cnt; %6f - mass; %8f - energy\n", obj_cnt, objects.getSize(), all_mass, nrj);
         renderer->render();
         // SDL_Delay(10);
     }
 }
 
-void App::parseEvent(int event) {
-    switch (event)
+void App::parseEvent(const SystemEvent& event) {
+    switch (event.event_type)
     {
     case QUIT_EVENT:
         running = false;
         break;
-    
+    case MOUSE_BUTTON_DOWN:
+        if (plot_button->onMouseTest(event.mouse_pos.pos)) {
+            plot_button->onClick(event.mouse_pos.pos);
+        }
     default:
         break;
     }

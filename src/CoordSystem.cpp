@@ -62,3 +62,37 @@ Vector CoordSystem::translateToAbsolute(const Vector& point) const {
     float result_y = absolute_pos.getY() + delta_y * rel_to_abs_coeff_y;
     return Vector(result_x, result_y);
 }
+
+void CoordSystem::setRelativeSize(const Vector& new_size) {
+    relative_size = new_size;
+    rel_to_abs_coeff_x = relative_size.getX()  / absolute_size.getX();
+    rel_to_abs_coeff_y = relative_size.getY()  / absolute_size.getY();
+}
+
+void CoordSystem::setAbsoluteSize(const Vector& new_size) {
+    absolute_size = new_size;
+    rel_to_abs_coeff_x = relative_size.getX()  / absolute_size.getX();
+    rel_to_abs_coeff_y = relative_size.getY()  / absolute_size.getY();
+}
+
+void CoordSystem::setRelativePos(const Vector& new_pos) {
+    relative_pos = new_pos;
+}
+void CoordSystem::setAbsolutePos(const Vector& new_pos) {
+    absolute_pos = new_pos;
+}
+
+const Vector& CoordSystem::getRelativeSize() {
+    return relative_size;
+}
+
+const Vector& CoordSystem::getAbsoluteSize() {
+    return absolute_size;
+}
+
+const Vector& CoordSystem::getRelativePos() {
+    return relative_pos;
+}
+const Vector& CoordSystem::getAbsolutePos() {
+    return absolute_pos;
+}

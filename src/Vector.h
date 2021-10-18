@@ -23,6 +23,8 @@ public:
 
     float getX() const;
     float getY() const;
+    void setX(float new_x) {x = new_x;}
+    void setY(float new_y) {y = new_y;}
     float getLength() const;
     void normalize();
     Vector getProjection(const Vector& other);
@@ -47,5 +49,6 @@ public:
 
 float dist_quad(const Vector& p1, const Vector& p2);
 
+bool rectHasPoint(const Rect2f& rect, const Vector& point);
 
 #endif

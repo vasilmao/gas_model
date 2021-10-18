@@ -15,11 +15,14 @@ private:
     Rect2f screen_place;
     CoordSystem* coord_system;
     List<PlotInfo>* data;
+    PlotInfo max_value = {0, 0};
+    void cutAndDrawLine(Vector p1, Vector p2, Renderer* renderer, Color color);
 public:
     PlotMoleculeCounter(){};
     PlotMoleculeCounter(Vector pos, Vector size);
     void computeNewPoint(MoleculeBox* box);
     void render(float dt, Renderer* renderer);
+    void shrinkToFit();
     ~PlotMoleculeCounter();
 };
 

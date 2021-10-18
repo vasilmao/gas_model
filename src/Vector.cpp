@@ -111,3 +111,9 @@ void Vector::elByElMult(const Vector& v2) {
 float dist_quad(const Vector& p1, const Vector& p2) {
     return (p1.getX() - p2.getX()) * (p1.getX() - p2.getX()) + (p1.getY() - p2.getY()) * (p1.getY() - p2.getY());
 }
+
+bool rectHasPoint(const Rect2f& rect, const Vector& point) {
+    bool x_result = rect.x <= point.getX() && point.getX() <= rect.x + rect.width;
+    bool y_result = rect.y <= point.getY() && point.getY() <= rect.y + rect.height;
+    return x_result && y_result;
+}
