@@ -78,8 +78,11 @@ void MoleculeBox::update(float dt) {
         i.getNode()->data->translateCoords(coord_system);
         all_mass += i.getNode()->data->getPhysObject()->getMass();
         nrj += i.getNode()->data->getPhysObject()->getMass() * i.getNode()->data->getPhysObject()->getSpeed().getLength() * i.getNode()->data->getPhysObject()->getSpeed().getLength() / 2;
-        if (i.getNode()->data->getType() == 1) {
-            nrj += ((Rect*)(i.getNode()->data))->potential_energy;
+        if (i.getNode()->data->getType() == (int)Shape::MoleculeType::RectangleMolecule) {
+            nrj += ((Rect*)(i.getNode()->data))->getPotentialEnergy();
+        }
+        if (i.getNode()->data->getType() == (int)Shape::MoleculeType::Wall) {
+            nrj += ((Wall*)(i.getNode()->data))->getPotentialEnergy();
         }
         ++obj_cnt;
     }
@@ -98,7 +101,7 @@ void MoleculeBox::render(float dt, Renderer* renderer) {
 void MoleculeBox::heatWalls() {
     for (List<Shape*>::Iterator i = objects->begin(); i.isValid(); ++i) {
         if (i.getNode()->data->getType() == (int)Shape::MoleculeType::Wall) {
-            reinterpret_cast<Wall*>(i.getNode()->data)->potential_energy += heat_wall_energy_addition;
+            reinterpret_cast<Wall*>(i.getNode()->data)->addPotentialEnergy(heat_wall_energy_addition);
         }
     }
 }

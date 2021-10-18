@@ -76,6 +76,7 @@ void App::run() {
         }
         float dt = 0.002;
         box->update(dt);
+        printf("kek\n");
         box->render(dt, renderer);
         ++cnt;
         if (cnt % 100 == 0) {

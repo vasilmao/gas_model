@@ -5,7 +5,7 @@
 #include "PhysShapes.h"
 #include "CoordSystem.h"
 
-const float MAX_POTENTIAL_ENERGY = 5000;
+const float MAX_POTENTIAL_ENERGY = 10000;
 
 class Shape {
 public:
@@ -70,8 +70,9 @@ public:
 };
 
 class Rect : public Shape {
-public:
+private:
     float potential_energy = 0;
+public:
     Rect() : Shape(MoleculeType::RectangleMolecule) {
         type_id = MoleculeType::RectangleMolecule;
         render_object = new RenderableRect();
@@ -107,11 +108,24 @@ public:
         delete phys_object;
         delete render_object;
     }
+
+    virtual void addPotentialEnergy(float delta) {
+        potential_energy += delta;
+    }
+
+    virtual float getPotentialEnergy() {
+        return potential_energy;
+    }
+
+    virtual void setPotentialEnergy(float new_pe) {
+        potential_energy = new_pe;
+    }
 };
 
 class Wall : public Shape {
-public:
+private:
     float potential_energy = 0;
+public:
     Wall () : Shape(MoleculeType::Wall){
         type_id = MoleculeType::Wall;
     }
@@ -132,6 +146,18 @@ public:
     virtual ~Wall() {
         delete phys_object;
         delete render_object;
+    }
+
+    virtual void addPotentialEnergy(float delta) {
+        potential_energy += delta;
+    }
+
+    virtual float getPotentialEnergy() {
+        return potential_energy;
+    }
+
+    virtual void setPotentialEnergy(float new_pe) {
+        potential_energy = new_pe;
     }
 };
 
