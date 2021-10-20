@@ -2,6 +2,7 @@
 #define RENDERER_INCLUDE
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include "CoordSystem.h"
 #include "Tools.h"
 
@@ -41,6 +42,7 @@ class Renderer {
 private:
     SDL_Window* window     = NULL;
     SDL_Renderer* renderer = NULL;
+    TTF_Font* font         = NULL;
     // SDL_Surface* surface   = NULL;
 
     PixelCoordSystem* coord_system;
@@ -65,7 +67,9 @@ public:
     void drawFilledRect(const Vector& p1, const Vector& p2, Color color) const;
     void drawSegment(const Vector& p1, const Vector& p2, Color color) const;
     void drawLine(const Vector& p1, const Vector& p2, Color color) const;
+    void drawThickLine(const Vector& p1, const Vector& p2, Color color) const;
     void render();
+    void drawText(const Vector& pos, const Vector& size, const char* text, Color color);
     SystemEvent getEvent() const;
 };
 

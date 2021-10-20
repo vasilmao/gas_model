@@ -13,5 +13,6 @@ bool Button::onClick(const Vector& mouse_pos) {
 }
 
 void Button::render(float dt, Renderer* renderer) {
-    renderer->drawFilledRect(pos, pos + size, {255, 0, 0, 255});
+    renderer->drawFilledRect(pos, pos + size, {255, 150, 150, 255});
+    renderer->drawText(pos, size, title, {0, 0, 255, 255});
 }

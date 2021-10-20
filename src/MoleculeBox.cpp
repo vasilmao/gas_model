@@ -2,6 +2,8 @@
 
 const float heat_wall_energy_addition = 1000;
 
+const float EPS = 1e-6;
+
 struct CollisionInfo {
     List<Shape*>::Iterator it1;
     List<Shape*>::Iterator it2;
@@ -14,17 +16,7 @@ MoleculeBox::MoleculeBox(Vector pos, Vector size) : screen_place{pos.getX(), pos
     objects = new List<Shape*>;
     Rect2f range_rect = {0, 0, size.getX(), size.getY()};
     coord_system = new CoordSystem(range_rect, screen_place);
-    // objects->add(new Wall({5, 5}, {395, 5}));
-    // printf("adding wall\n");
-    // objects->add(new Wall({5, 5}, {5, 295}));
-    // printf("adding wall\n");
-    // objects->add(new Wall({395, 5}, {395, 295}));
-    // printf("adding wall\n");
-    // objects->add(new Wall({5, 295}, {395, 295}));
-    // float pos1_x = screen_place.x;
-    // float pos1_y = screen_place.y;
-    // float pos2_x = pos1_x + screen_place.width;
-    // float pos2_y = pos1_y + screen_place.height;
+
     objects->add(new Wall({0, 0}, {range_rect.width + range_rect.x, 0}));
     objects->add(new Wall({0, 0}, {0, range_rect.height + range_rect.y}));
     objects->add(new Wall({range_rect.width + range_rect.x, 0}, {range_rect.width + range_rect.x, range_rect.height + range_rect.y}));
@@ -43,7 +35,7 @@ void MoleculeBox::update(float dt) {
     for (List<Shape*>::Iterator i = objects->begin(); i.isValid(); ++i) {
         for (List<Shape*>::Iterator j = i + 1; j.isValid(); ++j) {
             float collision_time = manager->detectCollision(i.getNode()->data->getPhysObject(), j.getNode()->data->getPhysObject(), dt);
-            if (collision_time > -(1e-6)) {
+            if (collision_time > -EPS) {
                 CollisionInfo info = {i, j, collision_time};
                 collisions.push_back(info);
             }
@@ -60,6 +52,7 @@ void MoleculeBox::update(float dt) {
         }
         return 1;
     });
+
     for (int i = 0; i < collisions.length(); ++i) {
         List<Shape*>::Iterator it1 = collisions[i].it1;
         List<Shape*>::Iterator it2 = collisions[i].it2;
@@ -86,9 +79,6 @@ void MoleculeBox::update(float dt) {
         }
         ++obj_cnt;
     }
-    // for (List<Shape*>::Iterator i = objects->begin(); i.isValid(); ++i) {
-    //     i.getNode()->data->getRenderObject()->render(renderer);
-    // }
 }
 
 void MoleculeBox::render(float dt, Renderer* renderer) {
@@ -100,8 +90,9 @@ void MoleculeBox::render(float dt, Renderer* renderer) {
 
 void MoleculeBox::heatWalls() {
     for (List<Shape*>::Iterator i = objects->begin(); i.isValid(); ++i) {
-        if (i.getNode()->data->getType() == (int)Shape::MoleculeType::Wall) {
-            reinterpret_cast<Wall*>(i.getNode()->data)->addPotentialEnergy(heat_wall_energy_addition);
+        Shape* shape = i.getNode()->data;
+        if (shape->getType() == (int)Shape::MoleculeType::Wall) {
+            reinterpret_cast<Wall*>(shape)->addPotentialEnergy(heat_wall_energy_addition);
         }
     }
 }

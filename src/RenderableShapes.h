@@ -2,7 +2,7 @@
 #define INCLUDE_RENDERABLE
 
 #include "Vector.h"
-#include "Renderer.h"
+#include "GraphicLib.h"
 
 class Renderable {
 public:
@@ -85,7 +85,7 @@ public:
 
     virtual void render(Renderer* renderer) {
         // printf("drawing line\n");
-        renderer->drawLine(point1, point2, color);
+        renderer->drawThickLine(point1, point2, color);
     }
 
     const Vector& getFirstPoint() const {

@@ -1,7 +1,7 @@
 #ifndef INCLUDE_MOLECULE_BOX
 #define INCLUDE_MOLECULE_BOX
 
-#include "Shapes.h"
+#include "Molecules.h"
 #include "CollisionManager.h"
 #include "CollisionReaction.h"
 #include "CoordSystem.h"

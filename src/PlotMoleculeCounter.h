@@ -1,7 +1,7 @@
 #ifndef INCLUDE_PLOT_MOLECULE_COUNTER
 #define INCLUDE_PLOT_MOLECULE_COUNTER
 
-#include "Shapes.h"
+#include "Molecules.h"
 #include "List.h"
 #include "MoleculeBox.h"
 

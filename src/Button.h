@@ -2,7 +2,7 @@
 #define INCLUDE_BUTTON
 
 #include "Vector.h"
-#include "Renderer.h"
+#include "GraphicLib.h"
 
 class AbstractFunctor {
 private:
@@ -17,10 +17,11 @@ class Button {
 private:
     Vector pos;
     Vector size;
+    const char* title;
     AbstractFunctor* functor;
 public:
     Button(){}
-    Button(const Vector& pos, const Vector& size, AbstractFunctor* new_functor) : pos(pos), size(size) {
+    Button(const Vector& pos, const Vector& size, AbstractFunctor* new_functor, const char* title) : pos(pos), size(size), title(title) {
         // printf("button initialized, my coords are (%f, %f), (%f, %f)\n", pos.getX(), pos.getY(), size.getX(), size.getY());
         functor = new_functor;
     }

@@ -8,7 +8,7 @@ PlotMoleculeCounter::PlotMoleculeCounter(Vector pos, Vector size) : screen_place
 }
 
 void PlotMoleculeCounter::computeNewPoint(MoleculeBox* box) {
-    if ((data->getSize() + 1) * plot_step >= screen_place.width) {
+    if ((data->getSize() + 5) * plot_step >= screen_place.width) {
         data->eraseHead();
         data->clear();
     }

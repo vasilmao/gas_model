@@ -44,10 +44,11 @@ App::App() {
     box = new MoleculeBox({5, 200}, {450, 390});
     plot = new PlotMoleculeCounter({5, 5}, {450, 190});
     AbstractFunctor* plot_button_functor = reinterpret_cast<AbstractFunctor*>(new PlotShrinkerButtonFunctor(plot));
-    plot_button = new Button({460, 5}, {100, 190}, plot_button_functor);
+    plot_button = new Button({460, 5}, {100, 190}, plot_button_functor, "Shrink to fit plot");
+
 
     AbstractFunctor* walls_button_functor = reinterpret_cast<AbstractFunctor*>(new WallHeaterButtonFunctor(box));
-    wall_heat_button = new Button({460, 200}, {100, 390}, walls_button_functor);
+    wall_heat_button = new Button({460, 500}, {100, 90}, walls_button_functor, "Heat walls");
 }
 
 App::~App() {
@@ -76,7 +77,6 @@ void App::run() {
         }
         float dt = 0.002;
         box->update(dt);
-        printf("kek\n");
         box->render(dt, renderer);
         ++cnt;
         if (cnt % 100 == 0) {
