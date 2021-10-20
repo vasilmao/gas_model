@@ -7,19 +7,19 @@
 // #define Max(a, b) a > b ? a : b
 // #define Min(a, b) a < b ? a : b
 
-void ReactCC(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*>* objects);
+void ReactCC(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*>* objects, Rect2f borders);
 
-void ReactRR(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*>* objects);
+void ReactRR(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*>* objects, Rect2f borders);
 
-void ReactCR(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*>* objects);
+void ReactCR(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*>* objects, Rect2f borders);
 
-void ReactCW(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*>* objects);
+void ReactCW(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*>* objects, Rect2f borders);
 
-void ReactRW(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*>* objects);
+void ReactRW(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*>* objects, Rect2f borders);
 
-void ReactWW(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*>* objects);
+void ReactWW(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*>* objects, Rect2f borders);
 
-typedef void (*chem_react)(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*>* objects);
+typedef void (*chem_react)(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*>* objects, Rect2f borders);
 
 class ReactionManager {
 private:
@@ -31,7 +31,7 @@ private:
 
 public:
     ReactionManager(){}
-    void chemReaction(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*>* objects) {
+    void chemReaction(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*>* objects, Rect2f borders) {
         // printf("chem reaction got!\n");
         // printf("types: %d and %d\n", it1.getNode()->data->getType(), it2.getNode()->data->getType());
         if (it1.getNode()->data->getType() > it2.getNode()->data->getType()) {
@@ -44,7 +44,7 @@ public:
         if (type1 < 0 || type2 < 0) {
             return;
         }
-        (*reactions_virtual_table[it1.getNode()->data->getType()][it2.getNode()->data->getType()])(it1, it2, objects);
+        (*reactions_virtual_table[it1.getNode()->data->getType()][it2.getNode()->data->getType()])(it1, it2, objects, borders);
     }
 };
 

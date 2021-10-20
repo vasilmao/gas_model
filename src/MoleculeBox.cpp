@@ -52,12 +52,14 @@ void MoleculeBox::update(float dt) {
         }
         return 1;
     });
-
+    Vector borders_pos = coord_system->getRelativePos();
+    Vector borders_size = coord_system->getRelativeSize();
+    Rect2f borders = {borders_pos.getX(), borders_pos.getY(), borders_size.getX(), borders_size.getY()};
     for (int i = 0; i < collisions.length(); ++i) {
         List<Shape*>::Iterator it1 = collisions[i].it1;
         List<Shape*>::Iterator it2 = collisions[i].it2;
         if (it1.isValid() && it2.isValid()) {
-            chem_manager->chemReaction(it1, it2, objects);
+            chem_manager->chemReaction(it1, it2, objects, borders);
         }
     }
     objects->clear();

@@ -16,10 +16,11 @@ public:
         Wall
     };
 protected:
+    MoleculeType type_id = MoleculeType::NoTypeMolecule;
+    float potential_energy = 0;
     Renderable* render_object;
     PhysShape* phys_object;
-    MoleculeType type_id = MoleculeType::NoTypeMolecule;
-    Shape(MoleculeType type_id) : type_id(type_id) {}
+    Shape(MoleculeType type_id, float potential_energy = 0) : type_id(type_id), potential_energy(potential_energy) {}
 public:
     
     virtual PhysShape* getPhysObject() const {
@@ -32,6 +33,18 @@ public:
 
     virtual int getType() const {
         return static_cast<int> (type_id);
+    }
+
+    virtual void addPotentialEnergy(float delta) {
+        potential_energy += delta;
+    }
+
+    virtual float getPotentialEnergy() {
+        return potential_energy;
+    }
+
+    virtual void setPotentialEnergy(float new_pe) {
+        potential_energy = new_pe;
     }
 
     virtual ~Shape() = 0;
@@ -70,8 +83,6 @@ public:
 };
 
 class Rect : public Shape {
-private:
-    float potential_energy = 0;
 public:
     Rect() : Shape(MoleculeType::RectangleMolecule) {
         type_id = MoleculeType::RectangleMolecule;
@@ -108,23 +119,10 @@ public:
         delete phys_object;
         delete render_object;
     }
-
-    virtual void addPotentialEnergy(float delta) {
-        potential_energy += delta;
-    }
-
-    virtual float getPotentialEnergy() {
-        return potential_energy;
-    }
-
-    virtual void setPotentialEnergy(float new_pe) {
-        potential_energy = new_pe;
-    }
 };
 
 class Wall : public Shape {
-private:
-    float potential_energy = 0;
+
 public:
     Wall () : Shape(MoleculeType::Wall){
         type_id = MoleculeType::Wall;

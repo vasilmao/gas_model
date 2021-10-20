@@ -61,7 +61,7 @@ App::~App() {
 
 void App::run() {
     running = true;
-    int cnt = 99;
+    int cnt = 19;
     while (running) {
         SystemEvent event_result = renderer->getEvent();
         while (event_result.event_type > 0) {
@@ -75,11 +75,11 @@ void App::run() {
         if (!running) {
             break;
         }
-        float dt = 0.002;
+        float dt = 0.008;
         box->update(dt);
         box->render(dt, renderer);
         ++cnt;
-        if (cnt % 100 == 0) {
+        if (cnt % 20 == 0) {
             plot->computeNewPoint(box);
             cnt = 0;
         }
@@ -88,7 +88,7 @@ void App::run() {
         wall_heat_button->render(dt, renderer);
         
         renderer->render();
-        // SDL_Delay(10);
+        SDL_Delay(1);
     }
 }
 
