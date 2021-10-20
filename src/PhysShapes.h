@@ -70,7 +70,7 @@ public:
     PhysCircle(Vector center, float r, Vector speed, float mass) : PhysShape(mass, speed, ShapeType::Circle), center(center), r(r) {}
 
     virtual ~PhysCircle() {
-        printf("circle destroyed!\n");
+        
     }
     
     virtual void move(float time) {
@@ -105,7 +105,7 @@ public:
     PhysRect(Vector position, Vector size, Vector speed, float mass) : PhysShape(mass, speed, ShapeType::Rectangle), position(position), size(size) {}
 
     virtual ~PhysRect() {
-        printf("rectangle destroyed!\n");
+        // printf("rectangle destroyed!\n");
     }
     
     virtual void move(float time) {
@@ -137,7 +137,7 @@ public:
     PhysWall() {}
     PhysWall(Vector pos1, Vector pos2, Vector speed, float mass) : PhysShape(mass, speed, ShapeType::Wall), pos1(pos1), pos2(pos2) {}
     ~PhysWall() {
-        printf("phys wall destroyed!\n");
+        // printf("phys wall destroyed!\n");
     }
 
     virtual void move(float time) {

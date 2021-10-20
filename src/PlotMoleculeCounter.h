@@ -17,6 +17,7 @@ private:
     List<PlotInfo>* data;
     PlotInfo max_value = {0, 0};
     void cutAndDrawLine(Vector p1, Vector p2, Renderer* renderer, Color color);
+    void drawAxis(Renderer* renderer);
 public:
     PlotMoleculeCounter(){};
     PlotMoleculeCounter(Vector pos, Vector size);

@@ -56,7 +56,7 @@ public:
     // Rect2f getPixelRect() const;
     // Rect2f getCoordRect() const;
     Vector translateToRelative(const Vector& point) const;
-    Vector translateToAbsolute(const Vector& pixel) const;
+    Vector translateToAbsolute(const Vector& point) const;
     void setRelativeSize(const Vector& new_size);
     void setAbsoluteSize(const Vector& new_size);
     void setRelativePos(const Vector& new_pos);

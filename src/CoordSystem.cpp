@@ -58,8 +58,17 @@ Vector CoordSystem::translateToAbsolute(const Vector& point) const {
     // printf("input: (%f %f)\n", point.getX(), point.getY());
     float delta_x  = point.getX() - relative_pos.getX();
     float delta_y  = point.getY() - relative_pos.getY();
-    float result_x = absolute_pos.getX() + delta_x * rel_to_abs_coeff_x;
-    float result_y = absolute_pos.getY() + delta_y * rel_to_abs_coeff_y;
+    float result_x = absolute_pos.getX() + delta_x / rel_to_abs_coeff_x;
+    float result_y = absolute_pos.getY() + delta_y / rel_to_abs_coeff_y;
+    return Vector(result_x, result_y);
+}
+
+Vector CoordSystem::translateToRelative(const Vector& point) const {
+    // printf("(%f %f %f %f) ___ (%f %f %f %f) (%f %f)\n", x_min, y_min, x_max, y_max, pixel_x, pixel_y, pixel_width, pixel_height, point_to_pixel_coeff_x, point_to_pixel_coeff_y);
+    float delta_x  = point.getX() - absolute_pos.getX();
+    float delta_y  = point.getY() - absolute_pos.getY();
+    float result_x = relative_pos.getX() + delta_x * rel_to_abs_coeff_x;
+    float result_y = relative_pos.getY() + delta_y * rel_to_abs_coeff_y; // (pixel_height - ...) because y counts for top
     return Vector(result_x, result_y);
 }
 

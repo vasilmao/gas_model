@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <assert.h>
 
+const float EPS = 1e-6;
+
 template<class T>
 const T& Max(const T& el1, const T& el2) {
     return el1 < el2 ? el2 : el1;

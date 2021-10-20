@@ -24,9 +24,12 @@ public:
     List<Shape*>* getObjects() {
         return objects;
     }
+    Rect2f getBox();
+    bool addMolecule(Shape* molecule);
     void heatWalls();
     void update(float dt);
     void render(float dt, Renderer* renderer);
+    ~MoleculeBox();
 };
 
 #endif

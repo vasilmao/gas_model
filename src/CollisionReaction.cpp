@@ -4,15 +4,15 @@ const float new_ball_r = 2.0;
 
 const float energy_coef = 0.1;
 
-const float min_energy_transition = 10;
+const float min_energy_transition = 50;
 
 void ReactCC(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*>* objects, Rect2f borders) {
     // printf("c + c\n");
-    Circle* circle1 = reinterpret_cast<Circle*> (it1.getNode()->data);
-    Circle* circle2 = reinterpret_cast<Circle*> (it2.getNode()->data);
+    Circle* circle1 = dynamic_cast<Circle*> (it1.getNode()->data);
+    Circle* circle2 = dynamic_cast<Circle*> (it2.getNode()->data);
 
-    PhysCircle* pc1 = reinterpret_cast<PhysCircle*>(circle1->getPhysObject());
-    PhysCircle* pc2 = reinterpret_cast<PhysCircle*>(circle2->getPhysObject());
+    PhysCircle* pc1 = dynamic_cast<PhysCircle*>(circle1->getPhysObject());
+    PhysCircle* pc2 = dynamic_cast<PhysCircle*>(circle2->getPhysObject());
 
     Vector center_line = pc2->getCenter()- pc1->getCenter();
     Vector speed1 = pc1->getSpeed();
@@ -29,16 +29,19 @@ void ReactCC(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*
     Vector center1 = pc1->getCenter();
     Vector center2 = pc2->getCenter();
     Vector new_size(new_ball_r * 2, new_ball_r * 2) ;
-    objects->add(new Rect((center1 + center2) / 2 - (new_size / 2), new_size, final_speed, m1 + m2, potential_energy_loss));
+    Rect* new_rect = new Rect((center1 + center2) / 2 - (new_size / 2), new_size, final_speed, m1 + m2, potential_energy_loss);
+    if (!objects->add(new_rect)) {
+        delete new_rect;
+    }
     objects->erase(it1);
     objects->erase(it2);
 }
 
 void ReactRR(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*>* objects, Rect2f borders) {
-    Rect* rect1 = reinterpret_cast<Rect*> (it1.getNode()->data);
-    Rect* rect2 = reinterpret_cast<Rect*> (it2.getNode()->data);
-    const PhysCircle* pr1 = (reinterpret_cast<PhysCircle*>(rect1->getPhysObject()));
-    const PhysCircle* pr2 = (reinterpret_cast<PhysCircle*>(rect2->getPhysObject()));
+    Rect* rect1 = dynamic_cast<Rect*> (it1.getNode()->data);
+    Rect* rect2 = dynamic_cast<Rect*> (it2.getNode()->data);
+    const PhysCircle* pr1 = (dynamic_cast<PhysCircle*>(rect1->getPhysObject()));
+    const PhysCircle* pr2 = (dynamic_cast<PhysCircle*>(rect2->getPhysObject()));
     Vector pos1 = pr1->getCenter();
     Vector pos2 = pr2->getCenter();
 
@@ -72,18 +75,23 @@ void ReactRR(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*
             ball_pos.setY(ball_pos.getY() - borders.height + new_ball_r);
         }
         Vector ball_speed(ball_speed_value * cos(current_angle), ball_speed_value * sin(current_angle));
-        objects->add(new Circle(ball_pos, new_ball_r, ball_speed, 1));
+        Circle* new_circle = new Circle(ball_pos, new_ball_r, ball_speed, 1);
+        if (!objects->add(new_circle)) {
+            delete new_circle;
+        }
         current_angle += angle;
     }
+    delete it1.getNode()->data;
+    delete it2.getNode()->data;
     objects->erase(it1);
     objects->erase(it2);
 }
 
 void ReactCR(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*>* objects, Rect2f borders) {
-    Circle* circle = reinterpret_cast<Circle*> (it1.getNode()->data);
-    Rect* rect = reinterpret_cast<Rect*> (it2.getNode()->data);
-    PhysCircle* phys_circle1 = reinterpret_cast<PhysCircle*> (circle->getPhysObject());
-    PhysCircle* phys_circle2 = reinterpret_cast<PhysCircle*> (rect->getPhysObject());
+    Circle* circle = dynamic_cast<Circle*> (it1.getNode()->data);
+    Rect* rect = dynamic_cast<Rect*> (it2.getNode()->data);
+    PhysCircle* phys_circle1 = dynamic_cast<PhysCircle*> (circle->getPhysObject());
+    PhysCircle* phys_circle2 = dynamic_cast<PhysCircle*> (rect->getPhysObject());
     Vector speed1 = phys_circle1->getSpeed();
     Vector speed2 = phys_circle2->getSpeed();
 
@@ -107,25 +115,31 @@ void ReactCR(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*
     phys_circle2->setR(side_len / 2);
     phys_circle2->setMass(m1 + m2);
     phys_circle2->setSpeed(final_speed);
+    delete it1.getNode()->data;
     objects->erase(it1);
 }
 
 void ReactCW(List<Shape*>::Iterator it1, List<Shape*>::Iterator it2, List<Shape*>* objects, Rect2f borders) {
     // need to do speed vector reflection
-    Wall* wall = reinterpret_cast<Wall*> (it2.getNode()->data);
+    Wall* wall = dynamic_cast<Wall*> (it2.getNode()->data);
     Shape* rect = it1.getNode()->data;
-    if (wall->getPotentialEnergy() > min_energy_transition) {
+    if (wall->getPotentialEnergy() > EPS) {
         float energy_delta = wall->getPotentialEnergy() - rect->getPotentialEnergy();
         energy_delta *= energy_coef;
-        if (energy_delta < -FLT_EPSILON) {
-            energy_delta = -energy_delta;
+        energy_delta = Max(min_energy_transition, energy_delta);
+        // if (energy_delta < -EPS) {
+        //     energy_delta = -energy_delta;
+        // }
+        if (energy_delta > EPS && wall->getPotentialEnergy() + EPS > energy_delta) {
+            energy_delta = Max(energy_delta, min_energy_transition);
+            energy_delta = Min(energy_delta, rect->getPotentialEnergy());
+            rect->addPotentialEnergy(energy_delta);
+            wall->addPotentialEnergy(-energy_delta);
         }
-        rect->addPotentialEnergy(energy_delta);
-        wall->addPotentialEnergy(-energy_delta);
     }
 
-    PhysCircle* phys_circle = reinterpret_cast<PhysCircle*> (it1.getNode()->data->getPhysObject());
-    PhysWall*   phys_wall   = reinterpret_cast<PhysWall*>   (it2.getNode()->data->getPhysObject());
+    PhysCircle* phys_circle = dynamic_cast<PhysCircle*> (it1.getNode()->data->getPhysObject());
+    PhysWall*   phys_wall   = dynamic_cast<PhysWall*>   (it2.getNode()->data->getPhysObject());
 
     Vector phys_circle_c = phys_circle->getCenter();
     Vector v1 = phys_wall->getFirstPoint();

@@ -17,23 +17,17 @@ Renderer::Renderer(int width, int height, Color bg_color, const Rect2f& range_re
     SDL_SetRenderTarget(renderer, NULL);
     SDL_SetRenderDrawColor(renderer, open_color(bg_color));
     SDL_RenderClear(renderer);
-    SDL_SetRenderDrawColor(renderer, open_color(current_color));
 
     TTF_Init();
-    font = TTF_OpenFont("Anonymous.ttf", 24);
+    font = TTF_OpenFont("Anonymous.ttf", 10);
     assert(font);
 
-    coord_system = new PixelCoordSystem(range_rect, {0., 0., (float)width, (float)height});
+    coord_system = new PixelCoordSystem(range_rect, {0.0f, 0.0f, (float)width, (float)height});
 }
 
 Renderer::~Renderer() {
     delete coord_system;
     printf("renderer destroyed!\n");
-}
-
-void Renderer::setColor(Color new_color) {
-    current_color = new_color;
-    SDL_SetRenderDrawColor(renderer, open_color(current_color));
 }
 
 void Renderer::drawFilledCircle(const Vector& center, const float r, Color color) const {
@@ -99,10 +93,10 @@ void Renderer::drawThickLine(const Vector& p1, const Vector& p2, Color color) co
     Vector pixel_p1 = coord_system->translatePoint(p1);
     Vector pixel_p2 = coord_system->translatePoint(p2);
     SDL_SetRenderDrawColor(renderer, open_color(color));
-    SDL_RenderDrawLine(renderer, (int)pixel_p1.getX(), (int)pixel_p1.getY(), (int)pixel_p2.getX(), (int)pixel_p2.getY());
-    SDL_RenderDrawLine(renderer, ((int)pixel_p1.getX()) - 1, (int)pixel_p1.getY(), ((int)pixel_p2.getX()) - 1, (int)pixel_p2.getY());
-    SDL_RenderDrawLine(renderer, (int)pixel_p1.getX(), ((int)pixel_p1.getY()) - 1, (int)pixel_p2.getX(), ((int)pixel_p2.getY()) - 1);
-    SDL_RenderDrawLine(renderer, ((int)pixel_p1.getX()) - 1, ((int)pixel_p1.getY()) - 1, ((int)pixel_p2.getX()) - 1, ((int)pixel_p2.getY())) - 1;
+    SDL_RenderDrawLineF(renderer, pixel_p1.getX(),     pixel_p1.getY(),     pixel_p2.getX(),     pixel_p2.getY()    );
+    SDL_RenderDrawLineF(renderer, pixel_p1.getX() - 1, pixel_p1.getY(),     pixel_p2.getX() - 1, pixel_p2.getY()    );
+    SDL_RenderDrawLineF(renderer, pixel_p1.getX(),     pixel_p1.getY() - 1, pixel_p2.getX(),     pixel_p2.getY() - 1);
+    SDL_RenderDrawLineF(renderer, pixel_p1.getX() - 1, pixel_p1.getY() - 1, pixel_p2.getX() - 1, pixel_p2.getY() - 1);
 
     SDL_SetRenderDrawColor(renderer, open_color(bg_color));
 }
@@ -111,6 +105,7 @@ void Renderer::render() {
     SDL_RenderPresent(renderer);
     SDL_SetRenderDrawColor(renderer, open_color(bg_color));
     SDL_RenderClear(renderer);
+    SDL_Delay(1);
     // SDL_SetRenderDrawColor(renderer, open_color(current_color));
 }
 
@@ -150,6 +145,8 @@ void Renderer::drawText(const Vector& pos, const Vector& size, const char* text,
     p1.setY(p2.getY());
     p2.setY(y);
     // printf("%f %f %f %f\n", p1.getX(), p1.getY(), p2.getX(), p2.getY());
-    SDL_Rect rect = {p1.getX() + 5, p1.getY() + (p2 - p1).getY() / 2 - 24 / 2, (p2 - p1).getX() - 5, 24};
+    SDL_Rect rect = {(int)p1.getX(), (int)p1.getY(), (int)(p2 - p1).getX(), (int)(p2 - p1).getY()};
     SDL_RenderCopy(renderer, texture, NULL, &rect);
+    SDL_DestroyTexture(texture);
+    SDL_FreeSurface(text_surface);
 }

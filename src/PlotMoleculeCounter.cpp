@@ -1,14 +1,16 @@
 #include "PlotMoleculeCounter.h"
 
 const float plot_step = 1;
+const float axis_caption_size = 25;
+const float axis_caption_step = 5;
 
 PlotMoleculeCounter::PlotMoleculeCounter(Vector pos, Vector size) : screen_place{pos.getX(), pos.getY(), size.getX(), size.getY()} {
-    data = new List<PlotInfo>();
+    data = new List<PlotInfo>(1000);
     coord_system = new CoordSystem({0, 0, screen_place.width, screen_place.height}, screen_place);
 }
 
 void PlotMoleculeCounter::computeNewPoint(MoleculeBox* box) {
-    if ((data->getSize() + 5) * plot_step >= screen_place.width) {
+    if ((data->getSize() + 5 + axis_caption_size) * plot_step >= screen_place.width) {
         data->eraseHead();
         data->clear();
     }
@@ -35,6 +37,26 @@ void PlotMoleculeCounter::computeNewPoint(MoleculeBox* box) {
     // printf("%d\n", (int)(data->getSize()));
 }
 
+void PlotMoleculeCounter::drawAxis(Renderer* renderer) {
+    Vector point1 = coord_system->translateToAbsolute({0, axis_caption_step});
+    Vector point2 = coord_system->translateToAbsolute({0, 0});
+    float axis_step_abs = Min((point1 - point2).getY(), (axis_caption_size) / 3);
+    float relative_height = coord_system->getRelativeSize().getY();
+    for (float i = axis_caption_step; i < relative_height; i += axis_caption_step) {
+        Vector point = coord_system->translateToAbsolute({0, i});
+        renderer->drawLine(point, point + Vector(3, 0), {0, 0, 0, 255});
+        Vector point_lower = coord_system->translateToAbsolute({0, i - axis_caption_step});
+        Vector text_rect_point = point_lower + Vector(3, (point1 - point2).getY() - axis_step_abs);
+
+        char text[5] = {0};
+        snprintf(text, 5, "%d", (int)i);
+        int text_length = strlen(text);
+
+        Vector text_rect_size = {(axis_step_abs) * (text_length), axis_step_abs};
+        renderer->drawText(text_rect_point, text_rect_size, text, {0, 0, 0, 255});
+    }
+}
+
 void PlotMoleculeCounter::render(float dt, Renderer* renderer) {
     renderer->drawFilledRect({screen_place.x, screen_place.y}, {screen_place.x + screen_place.width, screen_place.y +  screen_place.height}, {255, 255, 255, 255});
     renderer->drawRect({screen_place.x, screen_place.y}, {screen_place.x + screen_place.width, screen_place.y +  screen_place.height}, {0, 0, 0, 255});
@@ -43,9 +65,8 @@ void PlotMoleculeCounter::render(float dt, Renderer* renderer) {
     if (!it.isValid()) {
         return;
     }
-
     PlotInfo last_values = it.getNode()->data;
-    float x_coord = screen_place.x;
+    float x_coord = screen_place.x + axis_caption_size;
     ++it;
     max_value = last_values;
     for (; it.isValid(); ++it) {
@@ -66,6 +87,7 @@ void PlotMoleculeCounter::render(float dt, Renderer* renderer) {
         x_coord += plot_step;
         last_values = current_values;
     }
+    drawAxis(renderer);
 }
 
 void PlotMoleculeCounter::cutAndDrawLine(Vector p1, Vector p2, Renderer* renderer, Color color) {
@@ -90,9 +112,13 @@ void PlotMoleculeCounter::cutAndDrawLine(Vector p1, Vector p2, Renderer* rendere
 }
 
 void PlotMoleculeCounter::shrinkToFit() {
-    Vector abs_size = coord_system->getAbsoluteSize();
-    abs_size.setY((float)Max(max_value.circles_cnt + 2, max_value.rects_cnt + 2));
-    coord_system->setAbsoluteSize(abs_size);
+    // Vector abs_size = coord_system->getAbsoluteSize();
+    // abs_size.setY((float)Max(max_value.circles_cnt + 2, max_value.rects_cnt + 2));
+    // coord_system->setAbsoluteSize(abs_size);
+
+    Vector rel_size = coord_system->getRelativeSize();
+    rel_size.setY((float)Max(max_value.circles_cnt + 2, max_value.rects_cnt + 2));
+    coord_system->setRelativeSize(rel_size);
 }
 
 PlotMoleculeCounter::~PlotMoleculeCounter() {

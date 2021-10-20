@@ -98,20 +98,20 @@ public:
     }
 
     virtual void translateCoords(const CoordSystem* coord_system) {
-        (reinterpret_cast<RenderableRect*>(render_object))->setPos(coord_system->translateToAbsolute((reinterpret_cast<PhysCircle*>(phys_object))->getCenter() - Vector((reinterpret_cast<PhysCircle*>(phys_object))->getR(), (reinterpret_cast<PhysCircle*>(phys_object))->getR())));
-        (reinterpret_cast<RenderableRect*>(render_object))->setSize(2 * Vector(((reinterpret_cast<PhysCircle*>(phys_object))->getR()), ((reinterpret_cast<PhysCircle*>(phys_object))->getR())));
+        (dynamic_cast<RenderableRect*>(render_object))->setPos(coord_system->translateToAbsolute((dynamic_cast<PhysCircle*>(phys_object))->getCenter() - Vector((dynamic_cast<PhysCircle*>(phys_object))->getR(), (dynamic_cast<PhysCircle*>(phys_object))->getR())));
+        (dynamic_cast<RenderableRect*>(render_object))->setSize(2 * Vector(((dynamic_cast<PhysCircle*>(phys_object))->getR()), ((dynamic_cast<PhysCircle*>(phys_object))->getR())));
         float color_percent = potential_energy > MAX_POTENTIAL_ENERGY ? 1 : potential_energy / MAX_POTENTIAL_ENERGY;
-        (reinterpret_cast<RenderableRect*>(render_object))->color = {255, (unsigned char)(255 * (1 - color_percent)), (unsigned char)(255 * (1 - color_percent)), 255};
+        (dynamic_cast<RenderableRect*>(render_object))->color = {255, (unsigned char)(255 * (1 - color_percent)), (unsigned char)(255 * (1 - color_percent)), 255};
 
     }
 
     virtual Vector getReactionPos() {
-        float r = (reinterpret_cast<PhysCircle*>(phys_object))->getR();
-        return (reinterpret_cast<PhysCircle*>(phys_object))->getCenter() - Vector(r, r);
+        float r = (dynamic_cast<PhysCircle*>(phys_object))->getR();
+        return (dynamic_cast<PhysCircle*>(phys_object))->getCenter() - Vector(r, r);
     }
 
     virtual Vector getReactionSize() {
-        float r = (reinterpret_cast<PhysCircle*>(phys_object))->getR();
+        float r = (dynamic_cast<PhysCircle*>(phys_object))->getR();
         return Vector(r, r) * 2;
     }
 
@@ -135,10 +135,10 @@ public:
     }
 
     virtual void translateCoords(const CoordSystem* coord_system) {
-        (reinterpret_cast<RenderLine*>(render_object))->setFirstPoint(coord_system->translateToAbsolute((reinterpret_cast<PhysWall*>(phys_object))->getFirstPoint()));
-        (reinterpret_cast<RenderLine*>(render_object))->setSecondPoint(coord_system->translateToAbsolute((reinterpret_cast<PhysWall*>(phys_object))->getSecondPoint()));
+        (dynamic_cast<RenderLine*>(render_object))->setFirstPoint(coord_system->translateToAbsolute((dynamic_cast<PhysWall*>(phys_object))->getFirstPoint()));
+        (dynamic_cast<RenderLine*>(render_object))->setSecondPoint(coord_system->translateToAbsolute((dynamic_cast<PhysWall*>(phys_object))->getSecondPoint()));
         float color_percent = potential_energy > MAX_POTENTIAL_ENERGY ? 1 : potential_energy / MAX_POTENTIAL_ENERGY;
-        (reinterpret_cast<RenderLine*>(render_object))->color = {(unsigned char)(255 * color_percent), 0, 0, 255};
+        (dynamic_cast<RenderLine*>(render_object))->color = {(unsigned char)(255 * color_percent), 0, 0, 255};
     }
 
     virtual ~Wall() {

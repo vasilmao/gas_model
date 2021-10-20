@@ -4,6 +4,7 @@
 template <class T>
 class List {
 private:
+    int max_elem = 100;
     struct Node {
         T data;
         bool is_valid = true;
@@ -26,6 +27,8 @@ private:
     int clear_cnt = 0;
     
 public:
+    List(){}
+    List(int max_elem) : max_elem(max_elem) {}
     struct Iterator
     {
     private:
@@ -72,20 +75,24 @@ public:
         }
     };
     
-    void add(const T& elem) {
+    bool add(const T& elem) {
         if (size == 0) {
             // printf("bruh\n");
             head = new Node(elem);
             tail = head;
             // printf("%p\n", tail);
             size++;
-            return;
+            return true;
+        }
+        if (size == max_elem) {
+            return false;
         }
         size++;
         tail->right = new Node(elem);
         // printf("%p\n", tail->right);
         tail->right->left = tail;
         tail = tail->right;
+        return true;
     }
 
     void erase(Iterator& it) {

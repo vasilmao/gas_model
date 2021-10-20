@@ -2,8 +2,6 @@
 
 const float heat_wall_energy_addition = 1000;
 
-const float EPS = 1e-6;
-
 struct CollisionInfo {
     List<Shape*>::Iterator it1;
     List<Shape*>::Iterator it2;
@@ -13,7 +11,7 @@ struct CollisionInfo {
 MoleculeBox::MoleculeBox(Vector pos, Vector size) : screen_place{pos.getX(), pos.getY(), size.getX(), size.getY()} {
     manager = new CollisionManager();
     chem_manager = new ReactionManager();
-    objects = new List<Shape*>;
+    objects = new List<Shape*>(120);
     Rect2f range_rect = {0, 0, size.getX(), size.getY()};
     coord_system = new CoordSystem(range_rect, screen_place);
 
@@ -28,6 +26,17 @@ MoleculeBox::MoleculeBox(Vector pos, Vector size) : screen_place{pos.getX(), pos
     objects->add(new Rect({0 + 150, 0 + 100}, {30, 30}, {-30, 0}, 20));
     objects->add(new Rect({0 + 200, 0 + 200}, {30, 30}, {40, 0}, 20));
     objects->add(new Rect({0 + 220, 0 + 200}, {30, 30}, {-30, 0}, 20));
+}
+
+Rect2f MoleculeBox::getBox() {
+    Vector borders_pos = coord_system->getRelativePos();
+    Vector borders_size = coord_system->getRelativeSize();
+    Rect2f borders = {borders_pos.getX(), borders_pos.getY(), borders_size.getX(), borders_size.getY()};
+    return borders;
+}
+
+bool MoleculeBox::addMolecule(Shape* molecule) {
+    return objects->add(molecule);
 }
 
 void MoleculeBox::update(float dt) {
@@ -52,9 +61,7 @@ void MoleculeBox::update(float dt) {
         }
         return 1;
     });
-    Vector borders_pos = coord_system->getRelativePos();
-    Vector borders_size = coord_system->getRelativeSize();
-    Rect2f borders = {borders_pos.getX(), borders_pos.getY(), borders_size.getX(), borders_size.getY()};
+    Rect2f borders = getBox();
     for (int i = 0; i < collisions.length(); ++i) {
         List<Shape*>::Iterator it1 = collisions[i].it1;
         List<Shape*>::Iterator it2 = collisions[i].it2;
@@ -67,7 +74,6 @@ void MoleculeBox::update(float dt) {
     float all_mass = 0;
     float nrj = 0;
     int obj_cnt = 0;
-
     for (List<Shape*>::Iterator i = objects->begin(); i.isValid(); ++i) {
         i.getNode()->data->getPhysObject()->move(dt);
         i.getNode()->data->translateCoords(coord_system);
@@ -97,4 +103,12 @@ void MoleculeBox::heatWalls() {
             reinterpret_cast<Wall*>(shape)->addPotentialEnergy(heat_wall_energy_addition);
         }
     }
+}
+
+MoleculeBox::~MoleculeBox() {
+    for (List<Shape*>::Iterator i = objects->begin(); i.isValid(); ++i) {
+        Shape* shape = i.getNode()->data;
+        delete shape;
+    }
+    delete objects;
 }
